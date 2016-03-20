@@ -76,5 +76,11 @@ Default value: `'autocommit'`
 
 The message for the tag referenced above. This option is ignored if `options.tag` is `false`.
 
+#### options.deployDir
+Type: `String`
+Default value: `'tmp/deploy'`
+
+The directory which to perform git operations on (clone, commit, push, etc...).
+
 ## Contributing
 If you can think of a way to unit test this plugin please take a shot at it.

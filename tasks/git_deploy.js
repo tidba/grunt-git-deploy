@@ -20,11 +20,10 @@ module.exports = function(grunt) {
       message: 'autocommit',
       tag: false,
       tagMessage: 'autocommit',
-      branch: 'gh-pages'
+      branch: 'gh-pages',
+      deployDir: 'tmp/deploy'
     });
-
-    var pkg = grunt.file.readJSON('package.json');
-
+      
 
     if (!options.url) {
       grunt.fail.warn('The URL to a remote git repository is required.');
@@ -32,7 +31,6 @@ module.exports = function(grunt) {
     }
 
     var src = this.filesSrc[0];
-    var deployDir = 'tmp/' + pkg.name;
 
     if (!file.isDir(src)) {
       grunt.fail.warn('A source directory is needed.');
@@ -41,11 +39,11 @@ module.exports = function(grunt) {
 
     function git(args) {
       return function(cb) {
-        grunt.log.writeln('Running ' + args.join(' ').green + ' in ' + deployDir );
+        grunt.log.writeln('Running ' + args.join(' ').green + ' in ' + options.deployDir );
         spawn({
           cmd: 'git',
           args: args,
-          opts: {cwd: deployDir}
+          opts: { cwd: options.deployDir }
         }, cb);
       };
     }
@@ -91,7 +89,7 @@ module.exports = function(grunt) {
           };
       }
 
-    grunt.file.mkdir( deployDir );
+    grunt.file.mkdir(options.deployDir);
 
     grunt.file.delete(path.join(src, '.git'));
 
@@ -100,7 +98,7 @@ module.exports = function(grunt) {
     var commands = [
       git(['clone', '-b', options.branch, options.url, '.' ]),
       git(['checkout', '-B', options.branch]),
-      copyIntoRepo( src, deployDir ),
+      copyIntoRepo(src, options.deployDir),
       git(['add', '--all']),
       git(['commit', '--message=' + options.message ])
     ];
